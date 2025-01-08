@@ -1,9 +1,9 @@
 spring:
   docker:
     compose:
-      file: src/main/docker/compose.yaml
-      enabled: true
-      lifecycle-management: start_only
+#      file: src/main/docker/compose.yaml
+#      enabled: true
+#      lifecycle-management: start_only
 
   datasource:
     driver-class-name: org.postgresql.Driver

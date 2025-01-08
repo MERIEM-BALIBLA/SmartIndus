@@ -21,7 +21,7 @@ public class TacheServiceImpl implements TacheService {
     }
 
     @Override
-    public Page<Tache> findAllTaches(Pageable pageable){
+    public Page<Tache> findAll(Pageable pageable){
         return repository.findAll(pageable);
     }
 

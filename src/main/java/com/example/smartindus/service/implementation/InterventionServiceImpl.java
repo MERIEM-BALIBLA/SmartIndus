@@ -22,7 +22,7 @@ public class InterventionServiceImpl implements InterventionService {
     }
 
     @Override
-    public Page<Intervention> findAllInterventions(Pageable pageable){
+    public Page<Intervention> findAll(Pageable pageable){
         return repository.findAll(pageable);
     }
 

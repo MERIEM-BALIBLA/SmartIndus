@@ -13,7 +13,7 @@ public interface InterventionService {
 
     Intervention save(Intervention intervention);
 
-    Page<Intervention> findAllInterventions(Pageable pageable);
+    Page<Intervention> findAll(Pageable pageable);
 
     Optional<Intervention> findIntervention(UUID id);
 

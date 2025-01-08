@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface TacheService {
     Tache save(Tache tache);
 
-    Page<Tache> findAllTaches(Pageable pageable);
+    Page<Tache> findAll(Pageable pageable);
 
     Optional<Tache> findTache(UUID id);
 

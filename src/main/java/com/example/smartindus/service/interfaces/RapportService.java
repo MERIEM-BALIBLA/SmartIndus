@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface RapportService {
     Rapport save(Rapport rapport);
 
-    Page<Rapport> findAllRapports(Pageable pageable);
+    Page<Rapport> findAll(Pageable pageable);
 
     Optional<Rapport> findRapport(UUID id);
 

@@ -21,7 +21,7 @@ public class RapportServiceImpl implements RapportService {
     }
 
     @Override
-    public Page<Rapport> findAllRapports(Pageable pageable){
+    public Page<Rapport> findAll(Pageable pageable){
         return repository.findAll(pageable);
     }
 
