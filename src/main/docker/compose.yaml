@@ -1,0 +1,14 @@
+name: smartIndus
+services:
+  postgres:
+    container_name: smartIndus
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=smartIndus'
+      - 'POSTGRES_PASSWORD=password'
+      - 'POSTGRES_USER=smartIndus'
+    ports:
+      - '5435:5432'
+volumes:
+  postgres_data:
+    driver: local

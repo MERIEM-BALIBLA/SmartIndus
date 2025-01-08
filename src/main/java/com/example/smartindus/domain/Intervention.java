@@ -19,6 +19,7 @@ public class Intervention {
     private Type_Intervention type;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
+    @ManyToOne
     private Equipement equipement;
     private Statut_Intervention statut;
 }

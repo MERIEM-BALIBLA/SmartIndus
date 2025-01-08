@@ -20,5 +20,5 @@ public class Equipement {
     private String nom;
     private Equipement_Type type;
     private LocalDateTime dateInstallation;
-    private Equipement_Etat etat;
+    private Equipement_Etat etatEquipement;
 }

@@ -18,4 +18,5 @@ public class Rapport {
     private LocalDateTime dateIntervention;
     private double tauxResolution;
 
+
 }

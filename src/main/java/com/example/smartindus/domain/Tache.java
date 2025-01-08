@@ -22,8 +22,6 @@ public class Tache {
     @ManyToOne
     private Utilisateur utilisateur;
     @ManyToOne
-    private Equipement equipement;
-    @ManyToOne
     private Intervention intervention;
     private Tache_Statut status;
 }
