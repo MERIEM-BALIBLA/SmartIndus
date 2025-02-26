@@ -16,11 +16,11 @@ public class Equipe {
     private UUID id;
 
     @OneToMany
-    private List<Utilisateur> techniciens;
+    private List<User> techniciens;
 
     @ManyToOne
-    private Utilisateur responsable;
+    private User responsable;
 
     @ManyToOne
-    private Utilisateur operateur;
+    private User operateur;
 }

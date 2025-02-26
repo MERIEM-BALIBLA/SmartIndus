@@ -20,7 +20,7 @@ public class Tache {
     private LocalDateTime depart;
     private LocalDateTime fin;
     @ManyToOne
-    private Utilisateur utilisateur;
+    private User user;
     @ManyToOne
     private Intervention intervention;
     private Tache_Statut status;

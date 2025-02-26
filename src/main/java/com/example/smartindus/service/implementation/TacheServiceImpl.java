@@ -40,7 +40,7 @@ public class TacheServiceImpl implements TacheService {
             updatedTache.setFin(tache.getFin());
             updatedTache.setTitre(tache.getTitre());
             updatedTache.setDescription(tache.getDescription());
-            updatedTache.setUtilisateur(tache.getUtilisateur());
+            updatedTache.setUser(tache.getUser());
             updatedTache.setIntervention(tache.getIntervention());
             updatedTache.setStatus(tache.getStatus());
 
