@@ -1,45 +1,47 @@
 package com.example.smartindus.service.implementation;
 
-import com.example.smartindus.domain.Equipe;
+import com.example.smartindus.domain.EquipeEntity;
 import com.example.smartindus.repository.EquipeRepository;
 import com.example.smartindus.service.interfaces.EquipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class EquipeServiceImpl implements EquipeService {
     @Autowired
     private EquipeRepository repository;
 
     @Override
-    public Equipe save(Equipe equipe) {
-        return repository.save(equipe);
+    public EquipeEntity save(EquipeEntity equipeEntity) {
+        return repository.save(equipeEntity);
     }
 
     @Override
-    public Page<Equipe> findAll(Pageable pageable){
+    public Page<EquipeEntity> findAll(Pageable pageable){
         return repository.findAll(pageable);
     }
 
     @Override
-    public Optional<Equipe> findEquipe(UUID id) {
+    public Optional<EquipeEntity> findEquipe(UUID id) {
         return repository.findById(id);
     }
 
     @Override
-    public Equipe update(UUID id, Equipe equipe){
-        Optional<Equipe> existingEquipe = findEquipe(id);
+    public EquipeEntity update(UUID id, EquipeEntity equipeEntity){
+        Optional<EquipeEntity> existingEquipe = findEquipe(id);
         if (existingEquipe.isPresent()) {
-            Equipe updatedEquipe = existingEquipe.get();
+            EquipeEntity updatedEquipeEntity = existingEquipe.get();
 
-            updatedEquipe.setOperateur(equipe.getOperateur());
-            updatedEquipe.setResponsable(equipe.getResponsable());
-            updatedEquipe.setTechniciens(equipe.getTechniciens());
+            updatedEquipeEntity.setOperateur(equipeEntity.getOperateur());
+            updatedEquipeEntity.setResponsable(equipeEntity.getResponsable());
+            updatedEquipeEntity.setTechniciens(equipeEntity.getTechniciens());
 
-            return repository.save(updatedEquipe);
+            return repository.save(updatedEquipeEntity);
         } else {
             throw new RuntimeException("Equipe avec l'ID " + id + " n'existe pas.");
         }
@@ -47,10 +49,10 @@ public class EquipeServiceImpl implements EquipeService {
 
     @Override
     public void delete(UUID id){
-        Optional<Equipe> existingEquipe = findEquipe(id);
+        Optional<EquipeEntity> existingEquipe = findEquipe(id);
         if(existingEquipe.isPresent()){
-            Equipe equipe = existingEquipe.get();
-            repository.delete(equipe);
+            EquipeEntity equipeEntity = existingEquipe.get();
+            repository.delete(equipeEntity);
         }
     }
 }

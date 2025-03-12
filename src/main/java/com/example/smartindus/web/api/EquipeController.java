@@ -1,6 +1,6 @@
 package com.example.smartindus.web.api;
 
-import com.example.smartindus.domain.Equipe;
+import com.example.smartindus.domain.EquipeEntity;
 import com.example.smartindus.service.interfaces.EquipeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,22 +24,22 @@ public class EquipeController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Page<Equipe>> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
+    public ResponseEntity<Page<EquipeEntity>> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Equipe> equipes = service.findAll(pageable);
+        Page<EquipeEntity> equipes = service.findAll(pageable);
         return ResponseEntity.ok(equipes);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Equipe> save(@RequestBody Equipe equipe){
-        Equipe savedEquipe = service.save(equipe);
-        return ResponseEntity.ok(savedEquipe);
+    public ResponseEntity<EquipeEntity> save(@RequestBody EquipeEntity equipeEntity){
+        EquipeEntity savedEquipeEntity = service.save(equipeEntity);
+        return ResponseEntity.ok(savedEquipeEntity);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Equipe> update(@RequestBody Equipe equipe, @PathVariable UUID id){
-        Equipe updatedEquipe = service.update(id, equipe);
-        return ResponseEntity.ok(updatedEquipe);
+    public ResponseEntity<EquipeEntity> update(@RequestBody EquipeEntity equipeEntity, @PathVariable UUID id){
+        EquipeEntity updatedEquipeEntity = service.update(id, equipeEntity);
+        return ResponseEntity.ok(updatedEquipeEntity);
     }
 
     @DeleteMapping("/{id}")

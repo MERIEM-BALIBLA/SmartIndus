@@ -1,0 +1,394 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1741787446549-16
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: equipe
+            constraintName: fk_equipe_on_operateur
+  - changeSet:
+      id: 1741787446549-17
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: equipe
+            constraintName: fk_equipe_on_responsable
+  - changeSet:
+      id: 1741787446549-18
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: equipe_techniciens
+            constraintName: fk_equtec_on_equipe
+  - changeSet:
+      id: 1741787446549-19
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: equipe_techniciens
+            constraintName: fk_equtec_on_user
+  - changeSet:
+      id: 1741787446549-20
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: intervention
+            constraintName: fk_intervention_on_equipement
+  - changeSet:
+      id: 1741787446549-21
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: tache
+            constraintName: fk_tache_on_intervention
+  - changeSet:
+      id: 1741787446549-22
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: tache
+            constraintName: fk_tache_on_user
+  - changeSet:
+      id: 1741787446549-1
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_equipeentity
+                  name: id
+                  type: UUID
+              - column:
+                  name: responsable_id
+                  type: UUID
+              - column:
+                  name: operateur_id
+                  type: UUID
+            tableName: equipe_entity
+  - changeSet:
+      id: 1741787446549-2
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  name: equipe_entity_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: techniciens_id
+                  type: UUID
+            tableName: equipe_entity_techniciens
+  - changeSet:
+      id: 1741787446549-3
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_equipemententity
+                  name: id
+                  type: UUID
+              - column:
+                  name: nom
+                  type: VARCHAR(255)
+              - column:
+                  name: type
+                  type: SMALLINT
+              - column:
+                  name: date_installation
+                  type: DATETIME
+              - column:
+                  name: etat_equipement
+                  type: SMALLINT
+            tableName: equipement_entity
+  - changeSet:
+      id: 1741787446549-4
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_interventionentity
+                  name: id
+                  type: UUID
+              - column:
+                  name: type
+                  type: SMALLINT
+              - column:
+                  name: date_debut
+                  type: DATETIME
+              - column:
+                  name: date_fin
+                  type: DATETIME
+              - column:
+                  name: equipement_entity_id
+                  type: UUID
+              - column:
+                  name: statut
+                  type: SMALLINT
+            tableName: intervention_entity
+  - changeSet:
+      id: 1741787446549-5
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_rapportentity
+                  name: id
+                  type: UUID
+              - column:
+                  name: date_generation
+                  type: DATETIME
+              - column:
+                  name: date_intervention
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: taux_resolution
+                  type: DOUBLE
+            tableName: rapport_entity
+  - changeSet:
+      id: 1741787446549-6
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_tacheentity
+                  name: id
+                  type: UUID
+              - column:
+                  name: titre
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: depart
+                  type: DATETIME
+              - column:
+                  name: fin
+                  type: DATETIME
+              - column:
+                  name: user_entity_id
+                  type: UUID
+              - column:
+                  name: intervention_entity_id
+                  type: UUID
+              - column:
+                  name: status
+                  type: SMALLINT
+            tableName: tache_entity
+  - changeSet:
+      id: 1741787446549-7
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_userentity
+                  name: id
+                  type: UUID
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+              - column:
+                  name: cin
+                  type: VARCHAR(255)
+              - column:
+                  name: phone
+                  type: VARCHAR(255)
+              - column:
+                  name: role
+                  type: SMALLINT
+            tableName: user_entity
+  - changeSet:
+      id: 1741787446549-8
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: techniciens_id
+            constraintName: uc_equipe_entity_techniciens_techniciens
+            tableName: equipe_entity_techniciens
+  - changeSet:
+      id: 1741787446549-9
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: operateur_id
+            baseTableName: equipe_entity
+            constraintName: FK_EQUIPEENTITY_ON_OPERATEUR
+            referencedColumnNames: id
+            referencedTableName: user_entity
+  - changeSet:
+      id: 1741787446549-10
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: responsable_id
+            baseTableName: equipe_entity
+            constraintName: FK_EQUIPEENTITY_ON_RESPONSABLE
+            referencedColumnNames: id
+            referencedTableName: user_entity
+  - changeSet:
+      id: 1741787446549-11
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: equipement_entity_id
+            baseTableName: intervention_entity
+            constraintName: FK_INTERVENTIONENTITY_ON_EQUIPEMENTENTITY
+            referencedColumnNames: id
+            referencedTableName: equipement_entity
+  - changeSet:
+      id: 1741787446549-12
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: intervention_entity_id
+            baseTableName: tache_entity
+            constraintName: FK_TACHEENTITY_ON_INTERVENTIONENTITY
+            referencedColumnNames: id
+            referencedTableName: intervention_entity
+  - changeSet:
+      id: 1741787446549-13
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_entity_id
+            baseTableName: tache_entity
+            constraintName: FK_TACHEENTITY_ON_USERENTITY
+            referencedColumnNames: id
+            referencedTableName: user_entity
+  - changeSet:
+      id: 1741787446549-14
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: equipe_entity_id
+            baseTableName: equipe_entity_techniciens
+            constraintName: fk_equenttec_on_equipe_entity
+            referencedColumnNames: id
+            referencedTableName: equipe_entity
+  - changeSet:
+      id: 1741787446549-15
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: techniciens_id
+            baseTableName: equipe_entity_techniciens
+            constraintName: fk_equenttec_on_user_entity
+            referencedColumnNames: id
+            referencedTableName: user_entity
+  - changeSet:
+      id: 1741787446549-24
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: equipe
+  - changeSet:
+      id: 1741787446549-25
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: equipe_techniciens
+  - changeSet:
+      id: 1741787446549-26
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: equipement
+  - changeSet:
+      id: 1741787446549-27
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: intervention
+  - changeSet:
+      id: 1741787446549-28
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: rapport
+  - changeSet:
+      id: 1741787446549-29
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: tache
+  - changeSet:
+      id: 1741787446549-30
+      author: HP
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropTable:
+            cascadeConstraints: true
+            tableName: user
+

@@ -1,6 +1,6 @@
 package com.example.smartindus.web.api;
 
-import com.example.smartindus.domain.User;
+import com.example.smartindus.DTO.User;
 import com.example.smartindus.service.interfaces.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/User")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService service;
@@ -20,28 +20,28 @@ public class UserController {
         this.service = service;
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public ResponseEntity<Page<User>> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<User> Users = service.findAll(pageable);
+        Page<User> Users = service.findAllUsers(pageable);
         return ResponseEntity.ok(Users);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<User> save(@RequestBody User User){
-        User savedUser = service.save(User);
-        return ResponseEntity.ok(savedUser);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> update(@RequestBody User User, @PathVariable UUID id){
-        User updatedUser = service.update(id, User);
-        return ResponseEntity.ok(updatedUser);
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User savedUserEntity = service.createUser(user);
+        return ResponseEntity.ok(savedUserEntity);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable UUID id){
-        service.delete(id);
-        return ResponseEntity.ok("User a été bien supprimer");
+    public ResponseEntity<String> deleteUser(@PathVariable UUID id) {
+        service.deleteUser(id);
+        return ResponseEntity.ok("L'utilisateur a été bien supprimé!");
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody User user) {
+        User savedUserEntity = service.updateUser(id, user);
+        return ResponseEntity.ok(savedUserEntity);
     }
 }

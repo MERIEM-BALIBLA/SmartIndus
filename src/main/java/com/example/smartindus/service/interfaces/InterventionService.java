@@ -1,23 +1,28 @@
 package com.example.smartindus.service.interfaces;
 
-import com.example.smartindus.domain.Intervention;
+import com.example.smartindus.domain.InterventionEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public interface InterventionService {
 
-    Intervention save(Intervention intervention);
+    InterventionEntity saveIntervention(InterventionEntity interventionEntity);
 
-    Page<Intervention> findAll(Pageable pageable);
+    Page<InterventionEntity> findAllInterventions(Pageable pageable);
 
-    Optional<Intervention> findIntervention(UUID id);
+    Optional<InterventionEntity> findInterventionById(UUID id);
 
-    Intervention update(UUID id, Intervention intervention);
+    InterventionEntity updateIntervention(UUID id, InterventionEntity interventionEntity);
 
-    void delete(UUID id);
+    void deleteIntervention(UUID id);
+
+    List<InterventionEntity> findByEquipementId(UUID equipementId);
+
+    List<InterventionEntity> findCurrentInterventions();
 }

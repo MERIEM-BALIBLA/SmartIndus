@@ -1,6 +1,6 @@
 package com.example.smartindus.web.api;
 
-import com.example.smartindus.domain.Tache;
+import com.example.smartindus.domain.TacheEntity;
 import com.example.smartindus.service.interfaces.TacheService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/Tache")
+@RequestMapping("/api/taches")
 public class TacheController {
     private final TacheService service;
     
@@ -21,23 +21,23 @@ public class TacheController {
         this.service = service;
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<Page<Tache>> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
+    @GetMapping
+    public ResponseEntity<Page<TacheEntity>> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Tache> Taches = service.findAll(pageable);
+        Page<TacheEntity> Taches = service.findAllTaches(pageable);
         return ResponseEntity.ok(Taches);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Tache> save(@RequestBody Tache Tache){
-        Tache savedTache = service.save(Tache);
-        return ResponseEntity.ok(savedTache);
+    public ResponseEntity<TacheEntity> save(@RequestBody TacheEntity TacheEntity){
+        TacheEntity savedTacheEntity = service.save(TacheEntity);
+        return ResponseEntity.ok(savedTacheEntity);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Tache> update(@RequestBody Tache Tache, @PathVariable UUID id){
-        Tache updatedTache = service.update(id, Tache);
-        return ResponseEntity.ok(updatedTache);
+    public ResponseEntity<TacheEntity> update(@RequestBody TacheEntity TacheEntity, @PathVariable UUID id){
+        TacheEntity updatedTacheEntity = service.update(id, TacheEntity);
+        return ResponseEntity.ok(updatedTacheEntity);
     }
 
     @DeleteMapping("/{id}")

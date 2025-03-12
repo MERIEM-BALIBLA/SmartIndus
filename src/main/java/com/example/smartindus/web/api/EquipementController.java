@@ -1,49 +1,77 @@
 package com.example.smartindus.web.api;
 
-import com.example.smartindus.domain.Equipement;
+import com.example.smartindus.DTO.Equipement;
+import com.example.smartindus.DTO.EquipementMapper;
+import com.example.smartindus.domain.EquipementEntity;
 import com.example.smartindus.service.interfaces.EquipementService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+        import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/equipement")
+@RequestMapping("/api/equipements")
 public class EquipementController {
 
-    private final EquipementService service;
+    @Autowired
+    private EquipementService equipementService;
 
-    public EquipementController(EquipementService service) {
-        this.service = service;
+    @Autowired
+    private EquipementMapper equipementMapper;
+
+    @PostMapping
+    public ResponseEntity<Equipement> createEquipement(@RequestBody Equipement equipement) {
+        EquipementEntity entity = equipementMapper.toEntity(equipement);
+        EquipementEntity savedEntity = equipementService.saveEquipmenet(entity);
+        return new ResponseEntity<>(equipementMapper.toDTO(savedEntity), HttpStatus.CREATED);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<Page<Equipement>> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Equipement> equipements = service.findAll(pageable);
-        return ResponseEntity.ok(equipements);
+    @GetMapping
+    public ResponseEntity<Page<Equipement>> getAllEquipements(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "nom") String sortBy) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        Page<EquipementEntity> pageResult = equipementService.findAllEquipmenets(pageable);
+
+        Page<Equipement> dtoPage = pageResult.map(equipementMapper::toDTO);
+        return ResponseEntity.ok(dtoPage);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Equipement> save(@RequestBody Equipement equipement){
-        Equipement savedEquipement = service.save(equipement);
-        return ResponseEntity.ok(savedEquipement);
+    @GetMapping("/{id}")
+    public ResponseEntity<Equipement> getEquipementById(@PathVariable UUID id) {
+        Optional<EquipementEntity> equipementOpt = equipementService.findEquipement(id);
+
+        return equipementOpt
+                .map(entity -> ResponseEntity.ok(equipementMapper.toDTO(entity)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Equipement> update(@RequestBody Equipement equipement, @PathVariable UUID id){
-        Equipement updatedEquipement = service.update(id, equipement);
-        return ResponseEntity.ok(updatedEquipement);
+    public ResponseEntity<Equipement> updateEquipement(
+            @PathVariable UUID id,
+            @RequestBody Equipement equipement) {
+
+        try {
+            EquipementEntity entity = equipementMapper.toEntity(equipement);
+            EquipementEntity updatedEntity = equipementService.updateEquipmenet(id, entity);
+            return ResponseEntity.ok(equipementMapper.toDTO(updatedEntity));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable UUID id){
-        service.delete(id);
-        return ResponseEntity.ok("Equipement a été bien supprimer");
+    public ResponseEntity<String> deleteEquipement(@PathVariable UUID id) {
+        equipementService.deleteEquipmenet(id);
+        return ResponseEntity.ok("L'équipement a été bien supprimé!");
     }
 }

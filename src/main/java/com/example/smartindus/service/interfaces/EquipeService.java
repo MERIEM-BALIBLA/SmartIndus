@@ -1,6 +1,6 @@
 package com.example.smartindus.service.interfaces;
 
-import com.example.smartindus.domain.Equipe;
+import com.example.smartindus.domain.EquipeEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -10,13 +10,13 @@ import java.util.UUID;
 
 @Service
 public interface EquipeService {
-    Equipe save(Equipe equipe);
+    EquipeEntity save(EquipeEntity equipeEntity);
 
-    Page<Equipe> findAll(Pageable pageable);
+    Page<EquipeEntity> findAll(Pageable pageable);
 
-    Optional<Equipe> findEquipe(UUID id);
+    Optional<EquipeEntity> findEquipe(UUID id);
 
-    Equipe update(UUID id, Equipe equipe);
+    EquipeEntity update(UUID id, EquipeEntity equipeEntity);
 
     void delete(UUID id);
 }

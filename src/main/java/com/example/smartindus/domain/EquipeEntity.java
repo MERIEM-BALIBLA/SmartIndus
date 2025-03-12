@@ -10,17 +10,17 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Equipe {
+public class EquipeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @OneToMany
-    private List<User> techniciens;
+    private List<UserEntity> techniciens;
 
     @ManyToOne
-    private User responsable;
+    private UserEntity responsable;
 
     @ManyToOne
-    private User operateur;
+    private UserEntity operateur;
 }

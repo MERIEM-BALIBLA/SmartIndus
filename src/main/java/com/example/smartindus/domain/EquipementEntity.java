@@ -13,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Equipement {
+public class EquipementEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

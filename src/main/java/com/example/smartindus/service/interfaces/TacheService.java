@@ -1,6 +1,6 @@
 package com.example.smartindus.service.interfaces;
 
-import com.example.smartindus.domain.Tache;
+import com.example.smartindus.domain.TacheEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,15 +8,14 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
 public interface TacheService {
-    Tache save(Tache tache);
+    TacheEntity save(TacheEntity tacheEntity);
 
-    Page<Tache> findAll(Pageable pageable);
+    Page<TacheEntity> findAllTaches(Pageable pageable);
 
-    Optional<Tache> findTache(UUID id);
+    Optional<TacheEntity> findTache(UUID id);
 
-    Tache update(UUID id, Tache tache);
+    TacheEntity update(UUID id, TacheEntity tacheEntity);
 
     void delete(UUID id);
 }

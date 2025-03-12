@@ -11,7 +11,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Tache {
+public class TacheEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -20,8 +20,8 @@ public class Tache {
     private LocalDateTime depart;
     private LocalDateTime fin;
     @ManyToOne
-    private User user;
+    private UserEntity userEntity;
     @ManyToOne
-    private Intervention intervention;
+    private InterventionEntity interventionEntity;
     private Tache_Statut status;
 }

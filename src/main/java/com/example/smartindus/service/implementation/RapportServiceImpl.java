@@ -1,46 +1,48 @@
 package com.example.smartindus.service.implementation;
 
-import com.example.smartindus.domain.Rapport;
+import com.example.smartindus.domain.RapportEntity;
 import com.example.smartindus.repository.RapportRepository;
 import com.example.smartindus.service.interfaces.RapportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public class RapportServiceImpl implements RapportService {
 
     @Autowired
     private RapportRepository repository;
 
     @Override
-    public Rapport save(Rapport rapport) {
-        return repository.save(rapport);
+    public RapportEntity save(RapportEntity rapportEntity) {
+        return repository.save(rapportEntity);
     }
 
     @Override
-    public Page<Rapport> findAll(Pageable pageable){
+    public Page<RapportEntity> findAll(Pageable pageable){
         return repository.findAll(pageable);
     }
 
     @Override
-    public Optional<Rapport> findRapport(UUID id) {
+    public Optional<RapportEntity> findRapport(UUID id) {
         return repository.findById(id);
     }
 
     @Override
-    public Rapport update(UUID id, Rapport rapport){
-        Optional<Rapport> existingRapport = findRapport(id);
+    public RapportEntity update(UUID id, RapportEntity rapportEntity){
+        Optional<RapportEntity> existingRapport = findRapport(id);
         if (existingRapport.isPresent()) {
-            Rapport updatedRapport = existingRapport.get();
+            RapportEntity updatedRapportEntity = existingRapport.get();
 
-            updatedRapport.setDateGeneration(rapport.getDateGeneration());
-            updatedRapport.setDateIntervention(rapport.getDateIntervention());
-            updatedRapport.setTauxResolution(rapport.getTauxResolution());
+            updatedRapportEntity.setDateGeneration(rapportEntity.getDateGeneration());
+            updatedRapportEntity.setDateIntervention(rapportEntity.getDateIntervention());
+            updatedRapportEntity.setTauxResolution(rapportEntity.getTauxResolution());
 
-            return repository.save(updatedRapport);
+            return repository.save(updatedRapportEntity);
         } else {
             throw new RuntimeException("Rapport avec l'ID " + id + " n'existe pas.");
         }
@@ -48,10 +50,10 @@ public class RapportServiceImpl implements RapportService {
 
     @Override
     public void delete(UUID id){
-        Optional<Rapport> existingRapport = findRapport(id);
+        Optional<RapportEntity> existingRapport = findRapport(id);
         if(existingRapport.isPresent()){
-            Rapport rapport = existingRapport.get();
-            repository.delete(rapport);
+            RapportEntity rapportEntity = existingRapport.get();
+            repository.delete(rapportEntity);
         }
     }
 }

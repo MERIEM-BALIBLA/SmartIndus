@@ -12,14 +12,14 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Intervention {
+public class InterventionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private Type_Intervention type;
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
-    @ManyToOne
-    private Equipement equipement;
+    @OneToOne
+    private EquipementEntity equipementEntity;
     private Statut_Intervention statut;
 }

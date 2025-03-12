@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14
+    container_name: smartindus-db
+    environment:
+      - POSTGRES_DB=smartindus
+      - POSTGRES_USER=smartindus
+      - POSTGRES_PASSWORD=smartindus
+    ports:
+      - "5432:5432"
+    volumes:
+      - smartindus-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  smartindus-data:
