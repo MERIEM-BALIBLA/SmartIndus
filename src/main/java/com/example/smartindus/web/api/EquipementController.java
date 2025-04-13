@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
         import java.util.Optional;
@@ -27,6 +28,7 @@ public class EquipementController {
     private EquipementMapper equipementMapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('OPERATEUR_DE_PRODUCTION') or hasRole('TECHNICIEN_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<Equipement> createEquipement(@RequestBody Equipement equipement) {
         EquipementEntity entity = equipementMapper.toEntity(equipement);
         EquipementEntity savedEntity = equipementService.saveEquipmenet(entity);
@@ -34,6 +36,7 @@ public class EquipementController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('OPERATEUR_DE_PRODUCTION') or hasRole('TECHNICIEN_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<Page<Equipement>> getAllEquipements(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -47,6 +50,7 @@ public class EquipementController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('OPERATEUR_DE_PRODUCTION') or hasRole('TECHNICIEN_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<Equipement> getEquipementById(@PathVariable UUID id) {
         Optional<EquipementEntity> equipementOpt = equipementService.findEquipement(id);
 
@@ -56,6 +60,7 @@ public class EquipementController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('OPERATEUR_DE_PRODUCTION') or hasRole('TECHNICIEN_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<Equipement> updateEquipement(
             @PathVariable UUID id,
             @RequestBody Equipement equipement) {
@@ -70,6 +75,7 @@ public class EquipementController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('OPERATEUR_DE_PRODUCTION') or hasRole('TECHNICIEN_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<String> deleteEquipement(@PathVariable UUID id) {
         equipementService.deleteEquipmenet(id);
         return ResponseEntity.ok("L'équipement a été bien supprimé!");

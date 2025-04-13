@@ -29,6 +29,8 @@ public class UserServiceImpl implements UserService {
     private static final Pattern PHONE_PATTERN = Pattern.compile("^0[5-7][0-9]{8}$");
 
     private static final Pattern CIN_PATTERN = Pattern.compile("^[A-Z]{1,2}[0-9]{5,6}$");
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public User createUser(User user) {
@@ -170,5 +172,10 @@ public class UserServiceImpl implements UserService {
     private boolean cinExists(String cin) {
         return repository.findAll().stream()
                 .anyMatch(user -> user.getCin().equalsIgnoreCase(cin));
+    }
+
+
+    public Optional<UserEntity> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }

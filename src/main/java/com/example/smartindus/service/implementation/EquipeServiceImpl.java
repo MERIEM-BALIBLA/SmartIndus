@@ -1,58 +1,98 @@
 package com.example.smartindus.service.implementation;
 
+import com.example.smartindus.DTO.Equipe;
+import com.example.smartindus.DTO.EquipeMapper;
 import com.example.smartindus.domain.EquipeEntity;
+import com.example.smartindus.domain.UserEntity;
 import com.example.smartindus.repository.EquipeRepository;
+import com.example.smartindus.repository.UserRepository;
 import com.example.smartindus.service.interfaces.EquipeService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class EquipeServiceImpl implements EquipeService {
     @Autowired
-    private EquipeRepository repository;
+    private EquipeRepository equipeRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private EquipeMapper equipeMapper;
 
     @Override
-    public EquipeEntity save(EquipeEntity equipeEntity) {
-        return repository.save(equipeEntity);
+    public List<Equipe> getAllEquipes() {
+        return equipeRepository.findAll()
+                .stream()
+                .map(equipeMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Page<EquipeEntity> findAll(Pageable pageable){
-        return repository.findAll(pageable);
+    public Equipe getEquipeById(UUID id) {
+        EquipeEntity equipe = equipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Équipe avec l'ID " + id + " non trouvée."));
+        return equipeMapper.toDto(equipe);
     }
 
+    @Transactional
     @Override
-    public Optional<EquipeEntity> findEquipe(UUID id) {
-        return repository.findById(id);
+    public Equipe createEquipe(Equipe equipeDto) {
+        EquipeEntity equipe = equipeMapper.toEntity(equipeDto);
+
+        // Vérification des utilisateurs existants
+        UserEntity responsable = userRepository.findById(equipeDto.getResponsableId())
+                .orElseThrow(() -> new RuntimeException("Responsable non trouvé."));
+        UserEntity operateur = userRepository.findById(equipeDto.getOperateurId())
+                .orElseThrow(() -> new RuntimeException("Opérateur non trouvé."));
+
+        List<UserEntity> techniciens = equipeDto.getTechnicienIds().stream()
+                .map(id -> userRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Technicien avec ID " + id + " non trouvé.")))
+                .collect(Collectors.toList());
+
+        equipe.setResponsable(responsable);
+        equipe.setOperateur(operateur);
+        equipe.setTechniciens(techniciens);
+
+        equipe = equipeRepository.save(equipe);
+        return equipeMapper.toDto(equipe);
     }
 
+    @Transactional
     @Override
-    public EquipeEntity update(UUID id, EquipeEntity equipeEntity){
-        Optional<EquipeEntity> existingEquipe = findEquipe(id);
-        if (existingEquipe.isPresent()) {
-            EquipeEntity updatedEquipeEntity = existingEquipe.get();
+    public Equipe updateEquipe(UUID id, Equipe equipeDto) {
+        EquipeEntity existingEquipe = equipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Équipe avec l'ID " + id + " non trouvée."));
 
-            updatedEquipeEntity.setOperateur(equipeEntity.getOperateur());
-            updatedEquipeEntity.setResponsable(equipeEntity.getResponsable());
-            updatedEquipeEntity.setTechniciens(equipeEntity.getTechniciens());
+        UserEntity responsable = userRepository.findById(equipeDto.getResponsableId())
+                .orElseThrow(() -> new RuntimeException("Responsable non trouvé."));
+        UserEntity operateur = userRepository.findById(equipeDto.getOperateurId())
+                .orElseThrow(() -> new RuntimeException("Opérateur non trouvé."));
 
-            return repository.save(updatedEquipeEntity);
-        } else {
-            throw new RuntimeException("Equipe avec l'ID " + id + " n'existe pas.");
+        List<UserEntity> techniciens = equipeDto.getTechnicienIds().stream()
+                .map(uid -> userRepository.findById(uid)
+                        .orElseThrow(() -> new RuntimeException("Technicien avec ID " + uid + " non trouvé.")))
+                .collect(Collectors.toList());
+
+        existingEquipe.setResponsable(responsable);
+        existingEquipe.setOperateur(operateur);
+        existingEquipe.setTechniciens(techniciens);
+
+        equipeRepository.save(existingEquipe);
+        return equipeMapper.toDto(existingEquipe);
+    }
+
+    @Transactional
+    @Override
+    public void deleteEquipe(UUID id) {
+        if (!equipeRepository.existsById(id)) {
+            throw new RuntimeException("Équipe avec l'ID " + id + " non trouvée.");
         }
-    }
-
-    @Override
-    public void delete(UUID id){
-        Optional<EquipeEntity> existingEquipe = findEquipe(id);
-        if(existingEquipe.isPresent()){
-            EquipeEntity equipeEntity = existingEquipe.get();
-            repository.delete(equipeEntity);
-        }
+        equipeRepository.deleteById(id);
     }
 }

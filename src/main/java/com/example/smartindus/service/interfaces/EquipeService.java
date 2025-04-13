@@ -1,22 +1,28 @@
 package com.example.smartindus.service.interfaces;
 
+import com.example.smartindus.DTO.Equipe;
 import com.example.smartindus.domain.EquipeEntity;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Service
 public interface EquipeService {
-    EquipeEntity save(EquipeEntity equipeEntity);
 
-    Page<EquipeEntity> findAll(Pageable pageable);
+    List<Equipe> getAllEquipes();
 
-    Optional<EquipeEntity> findEquipe(UUID id);
+    Equipe getEquipeById(UUID id);
 
-    EquipeEntity update(UUID id, EquipeEntity equipeEntity);
+    @Transactional
+    Equipe createEquipe(Equipe equipeDto);
 
-    void delete(UUID id);
+    @Transactional
+    Equipe updateEquipe(UUID id, Equipe equipeDto);
+
+    @Transactional
+    void deleteEquipe(UUID id);
 }

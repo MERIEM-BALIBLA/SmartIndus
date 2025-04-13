@@ -13,5 +13,19 @@ services:
       - smartindus-data:/var/lib/postgresql/data
     restart: always
 
+  smartindus:
+    image: smartindus:latest  # This refers to your locally built image
+    container_name: smartindus
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/smartindus
+      - SPRING_DATASOURCE_USERNAME=smartindus
+      - SPRING_DATASOURCE_PASSWORD=smartindus
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "8031:8031"  # Updated to match the port exposed in your Dockerfile
+    depends_on:
+      - db
+    restart: always
+
 volumes:
   smartindus-data:

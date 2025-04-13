@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,6 +31,7 @@ public class InterventionController {
     private InterventionMapper interventionMapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('RESPONSABLE_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<Intervention> createIntervention(@RequestBody Intervention intervention) {
         try {
             InterventionEntity entity = interventionMapper.toEntity(intervention);
@@ -44,6 +46,7 @@ public class InterventionController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('RESPONSABLE_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<Page<Intervention>> getAllInterventions(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -61,6 +64,7 @@ public class InterventionController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('RESPONSABLE_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<Intervention> getInterventionById(@PathVariable UUID id) {
         try {
             Optional<InterventionEntity> interventionOpt = interventionService.findInterventionById(id);
@@ -75,6 +79,7 @@ public class InterventionController {
     }
 
     @GetMapping("/equipement/{equipementId}")
+    @PreAuthorize("hasRole('RESPONSABLE_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<List<Intervention>> getInterventionsByEquipementId(
             @PathVariable UUID equipementId) {
         try {
@@ -90,6 +95,7 @@ public class InterventionController {
     }
 
     @GetMapping("/current")
+    @PreAuthorize("hasRole('RESPONSABLE_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<List<Intervention>> getCurrentInterventions() {
         try {
             List<InterventionEntity> interventions = interventionService.findCurrentInterventions();
@@ -104,6 +110,7 @@ public class InterventionController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('RESPONSABLE_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<Intervention> updateIntervention(
             @PathVariable UUID id,
             @RequestBody Intervention intervention) {
@@ -123,6 +130,7 @@ public class InterventionController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('RESPONSABLE_DE_MAINTENANCE') or hasRole('ADMIN')")
     public ResponseEntity<String> deleteIntervention(@PathVariable UUID id) {
         try {
             interventionService.deleteIntervention(id);

@@ -16,10 +16,10 @@ public abstract class InterventionMapper {
     @Autowired
     protected EquipementRepository equipementRepository;
 
-    @Mapping(source = "equipementEntity", target = "equipementId", qualifiedByName = "equipementToId")
+    @Mapping(source = "equipement", target = "equipementId", qualifiedByName = "equipementToId")
     public abstract Intervention toDTO(InterventionEntity entity);
 
-    @Mapping(source = "equipementId", target = "equipementEntity", qualifiedByName = "idToEquipement")
+    @Mapping(source = "equipementId", target = "equipement", qualifiedByName = "idToEquipement")
     public abstract InterventionEntity toEntity(Intervention dto);
 
     @Named("equipementToId")

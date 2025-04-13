@@ -1,50 +1,50 @@
 package com.example.smartindus.web.api;
 
-import com.example.smartindus.domain.EquipeEntity;
+import com.example.smartindus.DTO.Equipe;
 import com.example.smartindus.service.interfaces.EquipeService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/equipe")
+@RequestMapping("/api/equipes")
 public class EquipeController {
+    @Autowired
+    private EquipeService equipeService;
 
-    private final EquipeService service;
-
-    public EquipeController(EquipeService service) {
-        this.service = service;
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Equipe>> getAllEquipes() {
+        return ResponseEntity.ok(equipeService.getAllEquipes());
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<Page<EquipeEntity>> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<EquipeEntity> equipes = service.findAll(pageable);
-        return ResponseEntity.ok(equipes);
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Equipe> getEquipeById(@PathVariable UUID id) {
+        return ResponseEntity.ok(equipeService.getEquipeById(id));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<EquipeEntity> save(@RequestBody EquipeEntity equipeEntity){
-        EquipeEntity savedEquipeEntity = service.save(equipeEntity);
-        return ResponseEntity.ok(savedEquipeEntity);
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Equipe> createEquipe(@Valid @RequestBody Equipe equipe) {
+        return ResponseEntity.ok(equipeService.createEquipe(equipe));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EquipeEntity> update(@RequestBody EquipeEntity equipeEntity, @PathVariable UUID id){
-        EquipeEntity updatedEquipeEntity = service.update(id, equipeEntity);
-        return ResponseEntity.ok(updatedEquipeEntity);
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Equipe> updateEquipe(@PathVariable UUID id, @Valid @RequestBody Equipe equipe) {
+        return ResponseEntity.ok(equipeService.updateEquipe(id, equipe));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable UUID id){
-        service.delete(id);
-        return ResponseEntity.ok("Equipe a été bien supprimer");
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteEquipe(@PathVariable UUID id) {
+        equipeService.deleteEquipe(id);
+        return ResponseEntity.noContent().build();
     }
 }

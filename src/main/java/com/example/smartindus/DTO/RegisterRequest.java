@@ -1,20 +1,13 @@
 package com.example.smartindus.DTO;
 
 import com.example.smartindus.domain.enums.Role;
+import lombok.Data;
 
-import java.util.UUID;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class User {
-    private UUID id;
+@Data
+public class RegisterRequest {
     private String firstName;
     private String lastName;
     private String email;
-    private String cin;
-    private String phone;
-    private Role role;
     private String password;
+    private Role role;
 }

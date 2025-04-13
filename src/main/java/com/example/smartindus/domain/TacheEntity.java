@@ -11,6 +11,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Table(name = "taches")
 public class TacheEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -20,8 +21,8 @@ public class TacheEntity {
     private LocalDateTime depart;
     private LocalDateTime fin;
     @ManyToOne
-    private UserEntity userEntity;
+    private UserEntity user;
     @ManyToOne
-    private InterventionEntity interventionEntity;
+    private InterventionEntity intervention;
     private Tache_Statut status;
 }

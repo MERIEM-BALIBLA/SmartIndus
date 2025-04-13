@@ -12,6 +12,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Table(name = "interventions")
 public class InterventionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -20,6 +21,6 @@ public class InterventionEntity {
     private LocalDateTime dateDebut;
     private LocalDateTime dateFin;
     @OneToOne
-    private EquipementEntity equipementEntity;
+    private EquipementEntity equipement;
     private Statut_Intervention statut;
 }

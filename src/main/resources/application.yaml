@@ -22,3 +22,8 @@ spring:
 
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+  # JWT Configuration
+  jwt:
+    secret-key: 3f+3wVmXQf4QCqaahmWBf/1Y9ysGnJsMImW4N7BJQDPqHtmWN8STm+S+7+7Jm0++EKd1y4Y/I8LNTly1ImSqKw==
+    expiration: 86400000  # 24h en millisecondes

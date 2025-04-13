@@ -30,21 +30,12 @@ public class InterventionServiceImpl implements InterventionService {
     @Override
     @Transactional
     public InterventionEntity saveIntervention(InterventionEntity intervention) {
-        // Validation de base
         validateIntervention(intervention);
-
-        // Vérification de la disponibilité de l'équipement
         checkEquipementAvailability(intervention);
-
-        // Mettre à jour l'état de l'équipement si l'intervention commence immédiatement
         updateEquipementStatus(intervention);
-
-        // Si le statut n'est pas défini, le mettre à PLANIFIEE
         if (intervention.getStatut() == null) {
             intervention.setStatut(Statut_Intervention.EN_COURS);
         }
-
-        // Enregistrer l'intervention
         return interventionRepository.save(intervention);
     }
 
@@ -75,50 +66,33 @@ public class InterventionServiceImpl implements InterventionService {
 
         InterventionEntity existingIntervention = existingInterventionOpt.get();
 
-        // Vérifier si l'équipement a changé
-        boolean equipementChanged = updatedIntervention.getEquipementEntity() != null &&
-                (existingIntervention.getEquipementEntity() == null ||
-                        !existingIntervention.getEquipementEntity().getId().equals(
-                                updatedIntervention.getEquipementEntity().getId()));
+        boolean equipementChanged = updatedIntervention.getEquipement() != null &&
+                (existingIntervention.getEquipement() == null ||
+                        !existingIntervention.getEquipement().getId().equals(
+                                updatedIntervention.getEquipement().getId()));
 
-        // Si l'équipement a changé, vérifier sa disponibilité
         if (equipementChanged) {
             checkEquipementAvailability(updatedIntervention);
         }
-
-        // Mettre à jour les champs non nuls
         if (updatedIntervention.getType() != null) {
             existingIntervention.setType(updatedIntervention.getType());
         }
-
         if (updatedIntervention.getDateDebut() != null) {
             existingIntervention.setDateDebut(updatedIntervention.getDateDebut());
         }
-
         if (updatedIntervention.getDateFin() != null) {
             existingIntervention.setDateFin(updatedIntervention.getDateFin());
         }
-
-        if (updatedIntervention.getEquipementEntity() != null) {
-            existingIntervention.setEquipementEntity(updatedIntervention.getEquipementEntity());
-        }
-
-        // Si le statut change à TERMINEE, mettre à jour l'état de l'équipement
         if (updatedIntervention.getStatut() != null) {
             boolean statusChangedToCompleted =
                     updatedIntervention.getStatut() == Statut_Intervention.TERMINEE &&
                             existingIntervention.getStatut() != Statut_Intervention.TERMINEE;
-
             existingIntervention.setStatut(updatedIntervention.getStatut());
-
             if (statusChangedToCompleted) {
                 completeIntervention(existingIntervention);
             }
         }
-
-        // Valider l'intervention après les modifications
         validateIntervention(existingIntervention);
-
         return interventionRepository.save(existingIntervention);
     }
 
@@ -129,17 +103,13 @@ public class InterventionServiceImpl implements InterventionService {
         if (!interventionOpt.isPresent()) {
             throw new RuntimeException("Intervention avec l'ID " + id + " n'existe pas");
         }
-
         InterventionEntity intervention = interventionOpt.get();
-
-        // Si l'intervention est en cours, réinitialiser l'état de l'équipement
         if (intervention.getStatut() == Statut_Intervention.EN_COURS &&
-                intervention.getEquipementEntity() != null) {
-            EquipementEntity equipement = intervention.getEquipementEntity();
+                intervention.getEquipement() != null) {
+            EquipementEntity equipement = intervention.getEquipement();
             equipement.setEtatEquipement(Equipement_Etat.BON_ETAT);
             equipementRepository.save(equipement);
         }
-
         interventionRepository.delete(intervention);
     }
 
@@ -148,7 +118,7 @@ public class InterventionServiceImpl implements InterventionService {
         if (equipementId == null) {
             throw new IllegalArgumentException("L'ID de l'équipement ne peut pas être nul");
         }
-        return interventionRepository.findByEquipementEntityId(equipementId);
+        return interventionRepository.findByEquipementId(equipementId);
     }
 
     @Override
@@ -157,50 +127,36 @@ public class InterventionServiceImpl implements InterventionService {
         return interventionRepository.findByStatut(Statut_Intervention.EN_COURS);
     }
 
-    // Méthodes de validation privées
-
     private void validateIntervention(InterventionEntity intervention) {
         if (intervention.getType() == null) {
             throw new IllegalArgumentException("Le type d'intervention est obligatoire");
         }
-
         if (intervention.getDateDebut() == null) {
             throw new IllegalArgumentException("La date de début est obligatoire");
         }
-
-        // Vérifier que la date de début n'est pas dans le passé pour les nouvelles interventions
         if (intervention.getId() == null && intervention.getDateDebut().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("La date de début ne peut pas être dans le passé");
         }
-
-        // Si la date de fin est spécifiée, vérifier qu'elle est après la date de début
         if (intervention.getDateFin() != null &&
                 intervention.getDateFin().isBefore(intervention.getDateDebut())) {
             throw new IllegalArgumentException("La date de fin doit être après la date de début");
         }
-
-        if (intervention.getEquipementEntity() == null) {
+        if (intervention.getEquipement() == null) {
             throw new IllegalArgumentException("L'équipement est obligatoire pour une intervention");
         }
     }
 
     private void checkEquipementAvailability(InterventionEntity intervention) {
-        if (intervention.getEquipementEntity() == null) {
+        if (intervention.getEquipement() == null) {
             return;
         }
-
-        UUID equipementId = intervention.getEquipementEntity().getId();
+        UUID equipementId = intervention.getEquipement().getId();
         LocalDateTime startDate = intervention.getDateDebut();
         LocalDateTime endDate = intervention.getDateFin();
-
-        // Si c'est une mise à jour, exclure l'intervention actuelle
         UUID currentInterventionId = intervention.getId();
-
-        // Vérifier s'il y a des interventions qui se chevauchent pour cet équipement
         List<InterventionEntity> overlappingInterventions =
                 interventionRepository.findOverlappingInterventions(
                         equipementId, startDate, endDate, currentInterventionId);
-
         if (!overlappingInterventions.isEmpty()) {
             throw new IllegalArgumentException(
                     "L'équipement est déjà programmé pour une autre intervention pendant cette période");
@@ -208,22 +164,15 @@ public class InterventionServiceImpl implements InterventionService {
     }
 
     private void updateEquipementStatus(InterventionEntity intervention) {
-        if (intervention.getEquipementEntity() == null) {
+        if (intervention.getEquipement() == null) {
             return;
         }
-
-        // Si l'intervention commence maintenant ou est déjà en cours
         if ((intervention.getDateDebut().isBefore(LocalDateTime.now().plusMinutes(15)) ||
                 intervention.getStatut() == Statut_Intervention.EN_COURS) &&
                 intervention.getStatut() != Statut_Intervention.TERMINEE) {
-
-            EquipementEntity equipement = intervention.getEquipementEntity();
-
-            // Mettre l'équipement en maintenance
+            EquipementEntity equipement = intervention.getEquipement();
             equipement.setEtatEquipement(Equipement_Etat.EN_MATENANCE);
             equipementRepository.save(equipement);
-
-            // Mettre à jour le statut de l'intervention si nécessaire
             if (intervention.getStatut() != Statut_Intervention.EN_COURS) {
                 intervention.setStatut(Statut_Intervention.EN_COURS);
             }
@@ -231,18 +180,13 @@ public class InterventionServiceImpl implements InterventionService {
     }
 
     private void completeIntervention(InterventionEntity intervention) {
-        if (intervention.getEquipementEntity() == null) {
+        if (intervention.getEquipement() == null) {
             return;
         }
-
-        EquipementEntity equipement = intervention.getEquipementEntity();
-
-        // Si la date de fin n'est pas définie, la définir maintenant
+        EquipementEntity equipement = intervention.getEquipement();
         if (intervention.getDateFin() == null) {
             intervention.setDateFin(LocalDateTime.now());
         }
-
-        // Remettre l'équipement en bon état après l'intervention
         equipement.setEtatEquipement(Equipement_Etat.BON_ETAT);
         equipementRepository.save(equipement);
     }
