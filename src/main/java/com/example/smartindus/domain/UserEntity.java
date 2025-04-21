@@ -31,7 +31,7 @@ public class UserEntity implements UserDetails {
     private String cin;
     private String phone;
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role = Role.USER;
     private LocalDateTime joinDate;
     private LocalDateTime licenseExpirationDate;
 

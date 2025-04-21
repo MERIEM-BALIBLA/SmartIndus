@@ -14,7 +14,7 @@ services:
     restart: always
 
   smartindus:
-    image: smartindus:latest  # This refers to your locally built image
+    image: smartindus:latest
     container_name: smartindus
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/smartindus
@@ -22,7 +22,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=smartindus
       - SPRING_PROFILES_ACTIVE=prod
     ports:
-      - "8031:8031"  # Updated to match the port exposed in your Dockerfile
+      - "8031:8080"
     depends_on:
       - db
     restart: always

@@ -22,7 +22,6 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or hasRole('TECHNICIEN_DE_MAINTENANCE')")
     public ResponseEntity<Page<User>> getAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> Users = service.findAllUsers(pageable);
