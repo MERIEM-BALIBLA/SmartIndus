@@ -3,6 +3,7 @@ package com.example.smartindus.service.implementation;
 import com.example.smartindus.DTO.User;
 import com.example.smartindus.DTO.UserMapper;
 import com.example.smartindus.domain.UserEntity;
+import com.example.smartindus.domain.enums.Role;
 import com.example.smartindus.exception.BusinessException;
 import com.example.smartindus.repository.UserRepository;
 import com.example.smartindus.service.interfaces.UserService;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -61,6 +63,41 @@ public class UserServiceImpl implements UserService {
         return repository.findById(id).map(userMapper::toDTO);
     }
 
+
+//    public User updateUser(UUID id, User user) {
+//        if (id == null) {
+//            throw new IllegalArgumentException("L'ID ne peut pas être null.");
+//        }
+//
+//        validateUser(user);
+//
+//        Optional<UserEntity> existingUser = repository.findById(id);
+//        if (existingUser.isPresent()) {
+//            UserEntity currentUser = existingUser.get();
+//
+//            if (!currentUser.getEmail().equals(user.getEmail()) && emailExists(user.getEmail())) {
+//                throw new IllegalArgumentException("L'email " + user.getEmail() + " est déjà utilisé.");
+//            }
+//
+//            if (!currentUser.getCin().equals(user.getCin()) && cinExists(user.getCin())) {
+//                throw new IllegalArgumentException("Le CIN " + user.getCin() + " est déjà utilisé.");
+//            }
+//
+//            UserEntity updatedUser = existingUser.get();
+//
+//            updatedUser.setFirstName(user.getFirstName());
+//            updatedUser.setEmail(user.getEmail());
+//            updatedUser.setLastName(user.getLastName());
+//            updatedUser.setCin(user.getCin());
+//            updatedUser.setRole(user.getRole());
+//            updatedUser.setPhone(user.getPhone());
+//
+//            return userMapper.toDTO(repository.save(updatedUser));
+//        } else {
+//            throw new RuntimeException("User avec l'ID " + id + " n'existe pas.");
+//        }
+//    }
+
     @Override
     public User updateUser(UUID id, User user) {
         if (id == null) {
@@ -73,12 +110,19 @@ public class UserServiceImpl implements UserService {
         if (existingUser.isPresent()) {
             UserEntity currentUser = existingUser.get();
 
-            if (!currentUser.getEmail().equals(user.getEmail()) && emailExists(user.getEmail())) {
+            // Vérification de l'email avec protection contre les nulls
+            if (user.getEmail() != null && !user.getEmail().equals(currentUser.getEmail() != null ? currentUser.getEmail() : "")
+                    && emailExists(user.getEmail())) {
                 throw new IllegalArgumentException("L'email " + user.getEmail() + " est déjà utilisé.");
             }
 
-            if (!currentUser.getCin().equals(user.getCin()) && cinExists(user.getCin())) {
-                throw new IllegalArgumentException("Le CIN " + user.getCin() + " est déjà utilisé.");
+            // Vérification du CIN avec protection contre les nulls
+            String currentCin = currentUser.getCin();
+            String newCin = user.getCin();
+            if (newCin != null && currentCin != null && !newCin.equals(currentCin) && cinExists(newCin)) {
+                throw new IllegalArgumentException("Le CIN " + newCin + " est déjà utilisé.");
+            } else if (newCin != null && currentCin == null && cinExists(newCin)) {
+                throw new IllegalArgumentException("Le CIN " + newCin + " est déjà utilisé.");
             }
 
             UserEntity updatedUser = existingUser.get();
@@ -111,6 +155,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Valide les données d'un utilisateur
+     *
      * @param user l'utilisateur à valider
      * @throws IllegalArgumentException si les données sont invalides
      */
@@ -156,6 +201,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Vérifie si un email existe déjà
+     *
      * @param email l'email à vérifier
      * @return true si l'email existe déjà, false sinon
      */
@@ -166,6 +212,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Vérifie si un CIN existe déjà
+     *
      * @param cin le CIN à vérifier
      * @return true si le CIN existe déjà, false sinon
      */
@@ -177,5 +224,39 @@ public class UserServiceImpl implements UserService {
 
     public Optional<UserEntity> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public User updateUserRole(UUID id, String role) {
+        if (id == null) {
+            throw new IllegalArgumentException("L'ID ne peut pas être null.");
+        }
+
+        if (role == null) {
+            throw new IllegalArgumentException("Le rôle ne peut pas être null ou vide.");
+        }
+
+        Optional<UserEntity> existingUser = repository.findById(id);
+        if (existingUser.isPresent()) {
+            UserEntity userEntity = existingUser.get();
+            Role roleEnum = Role.valueOf(role);
+            userEntity.setRole(roleEnum);
+            return userMapper.toDTO(repository.save(userEntity));
+        } else {
+            throw new RuntimeException("Utilisateur avec l'ID " + id + " n'existe pas.");
+        }
+    }
+
+    @Override
+    public User getUserById(UUID id){
+        return userMapper.toDTO(repository.findById(id).get());
+    }
+
+    @Override
+    public List<User> getUsersByRole(Role role) {
+        List<User> users = repository.findByRole(role).stream()
+                .map(userMapper::toDTO)
+                .toList();
+        return users;
     }
 }

@@ -28,10 +28,10 @@ public class UserEntity implements UserDetails {
     private String lastName;
     private String email;
     private String password;
-    private String cin;
+    private String cin = "AA";
     private String phone;
     @Enumerated(EnumType.STRING)
-    private Role role = Role.USER;
+    private Role role;
     private LocalDateTime joinDate;
     private LocalDateTime licenseExpirationDate;
 

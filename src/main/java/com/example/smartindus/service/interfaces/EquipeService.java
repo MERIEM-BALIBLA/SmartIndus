@@ -1,6 +1,7 @@
 package com.example.smartindus.service.interfaces;
 
 import com.example.smartindus.DTO.Equipe;
+import com.example.smartindus.DTO.EquipeDetailDTO;
 import com.example.smartindus.domain.EquipeEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -13,7 +14,7 @@ import java.util.UUID;
 
 public interface EquipeService {
 
-    List<Equipe> getAllEquipes();
+    Page<Equipe> getAllEquipes(int page, int size);
 
     Equipe getEquipeById(UUID id);
 
@@ -25,4 +26,11 @@ public interface EquipeService {
 
     @Transactional
     void deleteEquipe(UUID id);
+
+    Page<EquipeDetailDTO> getEquipesWithDetails(Pageable pageable);
+
+    List<EquipeDetailDTO> getEquipesWithDetails();
+
+//    List<EquipeDetailDTO> getEquipesWithDetails();
+
 }

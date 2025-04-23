@@ -1,6 +1,7 @@
 package com.example.smartindus.repository;
 
 import com.example.smartindus.domain.UserEntity;
+import com.example.smartindus.domain.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,4 +16,5 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findById(UUID id);
     Optional<UserEntity> findByEmail(String email);
     List<UserEntity> findByCin(String cin);
+    List<UserEntity> findByRole(Role role);
 }

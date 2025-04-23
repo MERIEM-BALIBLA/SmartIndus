@@ -5,6 +5,7 @@ import com.example.smartindus.DTO.AuthResponse;
 import com.example.smartindus.DTO.RegisterRequest;
 import com.example.smartindus.config.JwtService;
 import com.example.smartindus.domain.UserEntity;
+import com.example.smartindus.domain.enums.Role;
 import com.example.smartindus.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class AuthController {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(request.getRole())
+                .role(Role.USER)
                 .build();
         userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
@@ -41,12 +42,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+    public ResponseEntity<String> login(@RequestBody AuthRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
-        return ResponseEntity.ok(AuthResponse.builder().token(jwtToken).build());
+        return ResponseEntity.ok(jwtToken);
     }
 }

@@ -1,9 +1,13 @@
 package com.example.smartindus.web.api;
 
 import com.example.smartindus.DTO.Equipe;
+import com.example.smartindus.DTO.EquipeDetailDTO;
 import com.example.smartindus.service.interfaces.EquipeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +23,11 @@ public class EquipeController {
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Equipe>> getAllEquipes() {
-        return ResponseEntity.ok(equipeService.getAllEquipes());
+    public ResponseEntity<Page<Equipe>> getAllEquipes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        return ResponseEntity.ok(equipeService.getAllEquipes(page, size));
     }
 
     @GetMapping("/{id}")
@@ -47,4 +54,22 @@ public class EquipeController {
         equipeService.deleteEquipe(id);
         return ResponseEntity.noContent().build();
     }
+
+//    @GetMapping("/with-details")
+//    public ResponseEntity<List<EquipeDetailDTO>> getEquipesWithDetails() {
+//        List<EquipeDetailDTO> equipes = equipeService.getEquipesWithDetails();
+//        return ResponseEntity.ok(equipes);
+//    }
+
+    @GetMapping("/with-details")
+    public ResponseEntity<Page<EquipeDetailDTO>> getEquipesWithDetails(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<EquipeDetailDTO> equipesPage = equipeService.getEquipesWithDetails(pageable);
+        return ResponseEntity.ok(equipesPage);
+    }
+
+
 }
